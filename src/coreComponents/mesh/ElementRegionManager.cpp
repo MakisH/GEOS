@@ -140,11 +140,13 @@ EmbeddedSurfaceBlockABC & createDummyEmbeddedSurfaceBlock(string embeddedSurfFac
     
   elem.setEmbeddedSurfElemToNodes(std::move(elem2dToNodes));
  
-  ArrayOfArrays< localIndex > elem2dTo3d( 4);
-  elem2dTo3d.emplaceBack( 0, 0 );
-  elem2dTo3d.emplaceBack( 0, 0 );
-  elem2dTo3d.emplaceBack( 1, 1 );
-  elem2dTo3d.emplaceBack( 1, 1 );
+  ArrayOfArrays< localIndex > toBlockIndex(2);
+  ArrayOfArrays< localIndex > toCellIndex(2);
+  toBlockIndex.emplaceBack( 0, 0 );
+  toBlockIndex.emplaceBack( 1, 0 );
+  toCellIndex.emplaceBack( 0, 0 );
+  toCellIndex.emplaceBack( 1, 1 );
+   ToCellRelation<ArrayOfArrays< localIndex >> elem2dTo3d(toBlockIndex, toCellIndex);
 
   elem.setEmbeddedSurfElemTo3dElem(std::move(elem2dTo3d));
 
