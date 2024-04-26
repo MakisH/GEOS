@@ -151,7 +151,7 @@ set( mesh_sources
      simpleGeometricObjects/ThickPlane.cpp
      utilities/ComputationalGeometry.cpp )
 
-set( dependencyList ${parallelDeps} schema dataRepository constitutive finiteElement parmetis metis )
+set( dependencyList ${parallelDeps} mainInterface schema dataRepository constitutive finiteElement parmetis metis )
 
 if( ENABLE_VTK )
     message(STATUS "Adding VTK readers")
@@ -200,3 +200,6 @@ if( GEOS_ENABLE_TESTS )
     add_subdirectory( unitTests )
 endif( )
 
+
+#add_dependencies(mesh mainInterface)
+#add_dependencies(mesh linearAlgebra)
