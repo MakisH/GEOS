@@ -153,22 +153,22 @@ EmbeddedSurfaceBlockABC & createDummyEmbeddedSurfaceBlockOrig( string embeddedSu
 
   ArrayOfArrays< real64 > elem2dNodes( 6 );
   elem2dNodes.emplaceBack( 0, 0.5 );
-  elem2dNodes.emplaceBack( 0, 0.333 );
+  elem2dNodes.emplaceBack( 0, 0.3333333333 );
   elem2dNodes.emplaceBack( 0, 0 );
   elem2dNodes.emplaceBack( 1, 0.5 );
-  elem2dNodes.emplaceBack( 1, 0.666 );
+  elem2dNodes.emplaceBack( 1, 0.6666666666 );
   elem2dNodes.emplaceBack( 1, 0 );
   elem2dNodes.emplaceBack( 2, 0.5 );
-  elem2dNodes.emplaceBack( 2, 0.333 );
+  elem2dNodes.emplaceBack( 2, 0.3333333333 );
   elem2dNodes.emplaceBack( 2, 0.5 );
   elem2dNodes.emplaceBack( 3, 0.5 );
-  elem2dNodes.emplaceBack( 3, 0.666 );
+  elem2dNodes.emplaceBack( 3, 0.6666666666 );
   elem2dNodes.emplaceBack( 3, 0.5 );
   elem2dNodes.emplaceBack( 4, 0.5 );
-  elem2dNodes.emplaceBack( 4, 0.333 );
+  elem2dNodes.emplaceBack( 4, 0.3333333333 );
   elem2dNodes.emplaceBack( 4, 1.0 );
   elem2dNodes.emplaceBack( 5, 0.5 );
-  elem2dNodes.emplaceBack( 5, 0.666 );
+  elem2dNodes.emplaceBack( 5, 0.6666666666 );
   elem2dNodes.emplaceBack( 5, 1.0 );
 
   elem.setEmbeddedSurfElemNodes( std::move( elem2dNodes ));
