@@ -213,7 +213,7 @@ void ElementRegionManager::generateMesh( CellBlockManagerABC const & cellBlockMa
     // testing only
     //
     
-    bool experiment = false;
+    bool experiment = true;
     if (experiment)
     {
     
