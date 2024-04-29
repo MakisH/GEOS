@@ -668,7 +668,7 @@ void CellBlockManager::buildMaps()
   buildNodeToEdges();
 
   fillElementToEdgesOfCellBlocks( m_faceToEdges.toViewConst(), this->getCellBlocks() );
-  
+
   //buildEmbeddedSurfaceMaps();
 }
 
@@ -689,7 +689,8 @@ ToCellRelation< array2d< localIndex > > CellBlockManager::getFaceToElements() co
   return m_faceToCells;
 }
 
-ToCellRelation< localIndex > CellBlockManager::getEmbeddedSurfaceToElements() const {
+ToCellRelation< localIndex > CellBlockManager::getEmbeddedSurfaceToElements() const
+{
 
   return m_embeddedSurfToCells;
 }
@@ -800,8 +801,9 @@ LineBlock & CellBlockManager::registerLineBlock( string const & name )
   return this->getLineBlocks().registerGroup< LineBlock >( name );
 }
 
-EmbeddedSurfaceBlock & CellBlockManager::registerEmbeddedSurfaceBlock( string const & name ){
-  
+EmbeddedSurfaceBlock & CellBlockManager::registerEmbeddedSurfaceBlock( string const & name )
+{
+
   return this->getEmbeddedSurfaceBlocks().registerGroup< EmbeddedSurfaceBlock >( name );
 }
 

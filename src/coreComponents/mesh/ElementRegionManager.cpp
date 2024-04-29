@@ -121,13 +121,14 @@ void ElementRegionManager::setSchemaDeviations( xmlWrapper::xmlNode schemaRoot,
 }
 
 
-EmbeddedSurfaceBlockABC & createDummyEmbeddedSurfaceBlockOrig(string embeddedSurfFace, CellBlockManager & cellBlockManager){
+EmbeddedSurfaceBlockABC & createDummyEmbeddedSurfaceBlockOrig( string embeddedSurfFace, CellBlockManager & cellBlockManager )
+{
 
 
   EmbeddedSurfaceBlock & elem = cellBlockManager.registerEmbeddedSurfaceBlock( embeddedSurfFace );
-  elem.setNumEmbeddedSurfElem(2);
-    
-    
+  elem.setNumEmbeddedSurfElem( 2 );
+
+
   ArrayOfArrays< localIndex > elem2dToNodes( 2 );
   elem2dToNodes.emplaceBack( 0, 1 );
   elem2dToNodes.emplaceBack( 0, 0 );
@@ -137,18 +138,18 @@ EmbeddedSurfaceBlockABC & createDummyEmbeddedSurfaceBlockOrig(string embeddedSur
   elem2dToNodes.emplaceBack( 1, 2 );
   elem2dToNodes.emplaceBack( 1, 4 );
   elem2dToNodes.emplaceBack( 1, 5 );
-    
-  elem.setEmbeddedSurfElemToNodes(std::move(elem2dToNodes));
- 
-  ArrayOfArrays< localIndex > toBlockIndex(2);
-  ArrayOfArrays< localIndex > toCellIndex(2);
+
+  elem.setEmbeddedSurfElemToNodes( std::move( elem2dToNodes ));
+
+  ArrayOfArrays< localIndex > toBlockIndex( 2 );
+  ArrayOfArrays< localIndex > toCellIndex( 2 );
   toBlockIndex.emplaceBack( 0, 0 );
   toBlockIndex.emplaceBack( 1, 0 );
   toCellIndex.emplaceBack( 0, 4 );
   toCellIndex.emplaceBack( 1, 13 );
-   ToCellRelation<ArrayOfArrays< localIndex >> elem2dTo3d(toBlockIndex, toCellIndex);
+  ToCellRelation< ArrayOfArrays< localIndex > > elem2dTo3d( toBlockIndex, toCellIndex );
 
-  elem.setEmbeddedSurfElemTo3dElem(std::move(elem2dTo3d));
+  elem.setEmbeddedSurfElemTo3dElem( std::move( elem2dTo3d ));
 
   ArrayOfArrays< real64 > elem2dNodes( 6 );
   elem2dNodes.emplaceBack( 0, 0.5 );
@@ -159,18 +160,18 @@ EmbeddedSurfaceBlockABC & createDummyEmbeddedSurfaceBlockOrig(string embeddedSur
   elem2dNodes.emplaceBack( 1, 0 );
   elem2dNodes.emplaceBack( 2, 0.5 );
   elem2dNodes.emplaceBack( 2, 0.333 );
-  elem2dNodes.emplaceBack( 2, 0.5);
+  elem2dNodes.emplaceBack( 2, 0.5 );
   elem2dNodes.emplaceBack( 3, 0.5 );
   elem2dNodes.emplaceBack( 3, 0.666 );
   elem2dNodes.emplaceBack( 3, 0.5 );
   elem2dNodes.emplaceBack( 4, 0.5 );
   elem2dNodes.emplaceBack( 4, 0.333 );
-  elem2dNodes.emplaceBack( 4, 1.0);
+  elem2dNodes.emplaceBack( 4, 1.0 );
   elem2dNodes.emplaceBack( 5, 0.5 );
   elem2dNodes.emplaceBack( 5, 0.666 );
   elem2dNodes.emplaceBack( 5, 1.0 );
 
-  elem.setEmbeddedSurfElemNodes(std::move(elem2dNodes));
+  elem.setEmbeddedSurfElemNodes( std::move( elem2dNodes ));
 
   ArrayOfArrays< real64 > elemNormals( 2 );
   elemNormals.emplaceBack( 0, 1 );
@@ -179,7 +180,7 @@ EmbeddedSurfaceBlockABC & createDummyEmbeddedSurfaceBlockOrig(string embeddedSur
   elemNormals.emplaceBack( 1, 1 );
   elemNormals.emplaceBack( 1, 0 );
   elemNormals.emplaceBack( 1, 0 );
-  elem.setEmbeddedSurfElemNormalVectors(std::move(elemNormals));
+  elem.setEmbeddedSurfElemNormalVectors( std::move( elemNormals ));
 
   ArrayOfArrays< real64 > elemLengthVect( 2 );
   elemLengthVect.emplaceBack( 0, 0 );
@@ -188,7 +189,7 @@ EmbeddedSurfaceBlockABC & createDummyEmbeddedSurfaceBlockOrig(string embeddedSur
   elemLengthVect.emplaceBack( 1, 0 );
   elemLengthVect.emplaceBack( 1, 1 );
   elemLengthVect.emplaceBack( 1, 0 );
-  elem.setEmbeddedSurfElemTangentialLengthVectors(std::move(elemLengthVect));
+  elem.setEmbeddedSurfElemTangentialLengthVectors( std::move( elemLengthVect ));
 
   ArrayOfArrays< real64 > elemWidthVect( 2 );
   elemWidthVect.emplaceBack( 0, 0 );
@@ -197,7 +198,7 @@ EmbeddedSurfaceBlockABC & createDummyEmbeddedSurfaceBlockOrig(string embeddedSur
   elemWidthVect.emplaceBack( 1, 0 );
   elemWidthVect.emplaceBack( 1, 0 );
   elemWidthVect.emplaceBack( 1, 1 );
-  elem.setEmbeddedSurfElemTangentialWidthVectors(std::move(elemWidthVect));
+  elem.setEmbeddedSurfElemTangentialWidthVectors( std::move( elemWidthVect ));
 
   return elem;
 }
@@ -212,22 +213,23 @@ void ElementRegionManager::generateMesh( CellBlockManagerABC const & cellBlockMa
   {
     // testing only
     //
-    
-    bool experiment = true;
-    if (experiment)
-    {
-    
-    CellBlockManagerABC & cellBlockManagerNoConst = const_cast<CellBlockManagerABC &>(cellBlockManager);
-    CellBlockManager & cellBlockManagerConcrete = dynamic_cast<CellBlockManager &>(cellBlockManagerNoConst);
 
-    string name = "EmbeddedSurface";
-    createDummyEmbeddedSurfaceBlockOrig(name, cellBlockManagerConcrete);
-    elemRegion.generateMesh( cellBlockManager.getEmbeddedSurfaceBlocks() );
+    bool experiment = true;
+    if( experiment )
+    {
+
+      CellBlockManagerABC & cellBlockManagerNoConst = const_cast< CellBlockManagerABC & >(cellBlockManager);
+      CellBlockManager & cellBlockManagerConcrete = dynamic_cast< CellBlockManager & >(cellBlockManagerNoConst);
+
+      string name = "EmbeddedSurface";
+      createDummyEmbeddedSurfaceBlockOrig( name, cellBlockManagerConcrete );
+      elemRegion.generateMesh( cellBlockManager.getEmbeddedSurfaceBlocks() );
     }
-    else{
-    elemRegion.generateMesh( cellBlockManager.getFaceBlocks() );
+    else
+    {
+      elemRegion.generateMesh( cellBlockManager.getFaceBlocks() );
     }
-     
+
   } );
 
   // Some mappings of the surfaces subregions point to elements in other subregions and regions.
