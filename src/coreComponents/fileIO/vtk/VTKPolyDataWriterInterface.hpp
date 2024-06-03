@@ -262,7 +262,7 @@ protected:
    * @brief Writes a VTM file for the time-step \p time.
    * @details a VTM file is a VTK Multiblock file. It contains relative path to different files organized in blocks.
    * @param[in] cycle the current cycle number
-   * @param[in] elemManager the ElementRegionManager containing all the regions to be output and referred to in the VTM file
+   * @param[in] domain the DomainPartition containing all the regions to be output and referred to in the VTM file
    * @param[in] vtmWriter a writer specialized for the VTM file format
    */
   void writeVtmFile( integer const cycle,
