@@ -212,17 +212,20 @@ protected:
    * @brief Writes the files for all the CellElementRegions.
    * @details There will be one file written per CellElementRegion and per rank.
    * @param[in] time the time-step
-   * @param[in] cycle the current cycle number
    * @param[in] elemManager the ElementRegionManager containing the CellElementRegions to be output
    * @param[in] nodeManager the NodeManager containing the nodes of the domain to be output
-   * @param[in] meshLevelName the name of the MeshLevel containing the nodes and elements to be output
-   * @param[in] meshBodyName the name of the MeshBody containing the nodes and elements to be output
+   * @param[in] path the path to the file to output
    */
   void writeCellElementRegions( real64 time,
                                 ElementRegionManager const & elemManager,
                                 NodeManager const & nodeManager,
                                 string const & path ) const;
-
+  /**
+   * @brief Writes the files for all the ParticleRegions.
+   * @param[in] time the time-step
+   * @param[in] particleManager the ParticleManager containing the ParticleRegions to be output
+   * @param[in] path The path to the file to output
+   */
   void writeParticleRegions( real64 const time,
                              ParticleManager const & particleManager,
                              string const & path ) const;
@@ -231,9 +234,9 @@ protected:
    * @brief Writes the files containing the well representation
    * @details There will be one file written per WellElementRegion and per rank
    * @param[in] time the time-step
-   * @param[in] cycle the current cycle number
    * @param[in] elemManager the ElementRegionManager containing the WellElementRegions to be output
    * @param[in] nodeManager the NodeManager containing the nodes of the domain to be output
+   * @param[in] path The path to the file to output
    */
   void writeWellElementRegions( real64 time,
                                 ElementRegionManager const & elemManager,
@@ -244,11 +247,10 @@ protected:
    * @brief Writes the files containing the faces elements
    * @details There will be one file written per FaceElementRegion and per rank
    * @param[in] time the time-step
-   * @param[in] cycle the current cycle number
    * @param[in] elemManager the ElementRegionManager containing the FaceElementRegions to be output
    * @param[in] nodeManager the NodeManager containing the nodes of the domain to be output
-   * @param[in] meshLevelName the name of the MeshLevel containing the nodes and elements to be output
-   * @param[in] meshBodyName the name of the MeshBody containing the nodes and elements to be output
+   * @param[in] embSurfNodeManager the embbed surface node manager containing the nodes and elements to be output
+   * @param[in] path the path to the file to output
    */
   void writeSurfaceElementRegions( real64 time,
                                    ElementRegionManager const & elemManager,
@@ -263,7 +265,6 @@ protected:
    * @param[in] elemManager the ElementRegionManager containing all the regions to be output and referred to in the VTM file
    * @param[in] vtmWriter a writer specialized for the VTM file format
    */
-
   void writeVtmFile( integer const cycle,
                      DomainPartition const & domain,
                      VTKVTMWriter const & vtmWriter ) const;
@@ -285,6 +286,11 @@ protected:
   void writeElementFields( ElementRegionBase const & subRegion,
                            vtkCellData * cellData ) const;
 
+  /**
+   * @brief Writes all the fields associated to the elements of \p region if their plotlevel is <= m_plotLevel
+   * @param[in] region ParticleRegion being written
+   * @param[in] cellData a VTK object containing all the fields associated with the elements
+   */
   void writeParticleFields( ParticleRegionBase const & region,
                             vtkCellData * cellData ) const;
 
