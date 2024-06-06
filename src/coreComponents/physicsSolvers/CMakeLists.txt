@@ -154,8 +154,10 @@ set( physicsSolvers_headers
      wavePropagation/sem/acoustic/secondOrderEqn/anisotropic/AcousticVTIFields.hpp
      wavePropagation/sem/acoustic/secondOrderEqn/anisotropic/AcousticVTIFletcherWaveEquationSEM.hpp
      wavePropagation/sem/acoustic/secondOrderEqn/anisotropic/AcousticVTIFletcherWaveEquationSEMKernel.hpp
+     wavePropagation/sem/acoustic/secondOrderEqn/anisotropic/AcousticVTIFletcherAdjointWaveEquationSEMKernel.hpp
      wavePropagation/sem/acoustic/secondOrderEqn/anisotropic/AcousticVTIZhangWaveEquationSEM.hpp
      wavePropagation/sem/acoustic/secondOrderEqn/anisotropic/AcousticVTIZhangWaveEquationSEMKernel.hpp
+     wavePropagation/sem/acoustic/secondOrderEqn/anisotropic/AcousticVTIZhangAdjointWaveEquationSEMKernel.hpp
      wavePropagation/sem/acoustoelastic/secondOrderEqn/isotropic/AcoustoElasticFields.hpp
      wavePropagation/sem/acoustoelastic/secondOrderEqn/isotropic/AcoustoElasticTimeSchemeSEMKernel.hpp
      wavePropagation/sem/acoustoelastic/secondOrderEqn/isotropic/AcousticElasticWaveEquationSEM.hpp

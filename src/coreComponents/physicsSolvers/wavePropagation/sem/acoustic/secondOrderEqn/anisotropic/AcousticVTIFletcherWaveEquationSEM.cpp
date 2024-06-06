@@ -533,7 +533,7 @@ real64 AcousticVTIFletcherWaveEquationSEM::explicitStepForward( real64 const & t
                                                                 DomainPartition & domain,
                                                                 bool computeGradient )
 {
-  real64 dtOut = explicitStepInternal( time_n, dt, cycleNumber, domain );
+  real64 dtOut = explicitStepInternal( time_n, dt, cycleNumber, domain, true );
 
   forDiscretizationOnMeshTargets( domain.getMeshBodies(),
                                   [&] ( string const &,
@@ -562,14 +562,39 @@ real64 AcousticVTIFletcherWaveEquationSEM::explicitStepForward( real64 const & t
 }
 
 
-real64 AcousticVTIFletcherWaveEquationSEM::explicitStepBackward( real64 const & GEOS_UNUSED_PARAM( time_n ),
-                                                                 real64 const & GEOS_UNUSED_PARAM( dt ),
-                                                                 integer GEOS_UNUSED_PARAM( cycleNumber ),
-                                                                 DomainPartition & GEOS_UNUSED_PARAM( domain ),
-                                                                 bool GEOS_UNUSED_PARAM( computeGradient ) )
+real64 AcousticVTIFletcherWaveEquationSEM::explicitStepBackward( real64 const & time_n,
+                                                                 real64 const & dt,
+                                                                 integer cycleNumber,
+                                                                 DomainPartition & domain,
+                                                                 bool computeGradient )
 {
-  GEOS_ERROR( "This option is not supported yet" );
-  return 0.;
+
+  real64 dtOut = explicitStepInternal( time_n, dt, cycleNumber, domain, false );
+
+  forDiscretizationOnMeshTargets( domain.getMeshBodies(),
+                                  [&] ( string const &,
+                                        MeshLevel & mesh,
+                                        arrayView1d< string const > const & GEOS_UNUSED_PARAM ( regionNames ) )
+  {
+    NodeManager & nodeManager = mesh.getNodeManager();
+
+    arrayView1d< real32 > const p_nm1 = nodeManager.getField< acousticvtifields::Pressure_p_nm1 >();
+    arrayView1d< real32 > const p_n = nodeManager.getField< acousticvtifields::Pressure_p_n >();
+    arrayView1d< real32 > const p_np1 = nodeManager.getField< acousticvtifields::Pressure_p_np1 >();
+
+    arrayView1d< real32 > const q_nm1 = nodeManager.getField< acousticvtifields::Pressure_q_nm1 >();
+    arrayView1d< real32 > const q_n = nodeManager.getField< acousticvtifields::Pressure_q_n >();
+    arrayView1d< real32 > const q_np1 = nodeManager.getField< acousticvtifields::Pressure_q_np1 >();
+
+    if( computeGradient && cycleNumber >= 0 )
+    {
+      GEOS_ERROR( "This option is not supported yet" );
+    }
+
+    prepareNextTimestep( mesh );
+  } );
+
+  return dtOut;
 }
 
 void AcousticVTIFletcherWaveEquationSEM::prepareNextTimestep( MeshLevel & mesh )
@@ -610,7 +635,8 @@ void AcousticVTIFletcherWaveEquationSEM::computeUnknowns( real64 const & GEOS_UN
                                                           integer cycleNumber,
                                                           DomainPartition & GEOS_UNUSED_PARAM( domain ),
                                                           MeshLevel & mesh,
-                                                          arrayView1d< string const > const & regionNames )
+                                                          arrayView1d< string const > const & regionNames,
+                                                          bool const isForward )
 {
   NodeManager & nodeManager = mesh.getNodeManager();
 
@@ -634,18 +660,33 @@ void AcousticVTIFletcherWaveEquationSEM::computeUnknowns( real64 const & GEOS_UN
   arrayView1d< real32 > const stiffnessVector_p = nodeManager.getField< acousticvtifields::StiffnessVector_p >();
   arrayView1d< real32 > const stiffnessVector_q = nodeManager.getField< acousticvtifields::StiffnessVector_q >();
   arrayView1d< real32 > const rhs = nodeManager.getField< acousticfields::ForcingRHS >();
+  if(isForward)
+  {
+    auto kernelFactory = acousticVTIFletcherWaveEquationSEMKernels::ExplicitAcousticVTIFletcherSEMFactory( dt );
 
-  auto kernelFactory = acousticVTIFletcherWaveEquationSEMKernels::ExplicitAcousticVTIFletcherSEMFactory( dt );
+    finiteElement::
+      regionBasedKernelApplication< EXEC_POLICY,
+                                    constitutive::NullModel,
+                                    CellElementSubRegion >( mesh,
+                                                            regionNames,
+                                                            getDiscretizationName(),
+                                                            "",
+                                                            kernelFactory );
+  }
+  else{
+    auto kernelFactory = acousticVTIFletcherAdjointWaveEquationSEMKernels::ExplicitAcousticVTIFletcherAdjointSEMFactory( dt );
 
-  finiteElement::
-    regionBasedKernelApplication< EXEC_POLICY,
-                                  constitutive::NullModel,
-                                  CellElementSubRegion >( mesh,
-                                                          regionNames,
-                                                          getDiscretizationName(),
-                                                          "",
-                                                          kernelFactory );
+    finiteElement::
+      regionBasedKernelApplication< EXEC_POLICY,
+                                    constitutive::NullModel,
+                                    CellElementSubRegion >( mesh,
+                                                            regionNames,
+                                                            getDiscretizationName(),
+                                                            "",
+                                                            kernelFactory );
+  }
 
+  //Modification of cycleNember useful when minTime < 0
   EventManager const & event = getGroupByPath< EventManager >( "/Problem/Events" );
   real64 const & minTime = event.getReference< real64 >( EventManager::viewKeyStruct::minTimeString() );
   integer const cycleForSource = int(round( -minTime / dt + cycleNumber ));
@@ -716,7 +757,8 @@ void AcousticVTIFletcherWaveEquationSEM::synchronizeUnknowns( real64 const & tim
 real64 AcousticVTIFletcherWaveEquationSEM::explicitStepInternal( real64 const & time_n,
                                                                  real64 const & dt,
                                                                  integer const cycleNumber,
-                                                                 DomainPartition & domain )
+                                                                 DomainPartition & domain,
+                                                                 bool const isForward )
 {
   GEOS_MARK_FUNCTION;
 
@@ -726,7 +768,7 @@ real64 AcousticVTIFletcherWaveEquationSEM::explicitStepInternal( real64 const & 
                                                                 MeshLevel & mesh,
                                                                 arrayView1d< string const > const & regionNames )
   {
-    computeUnknowns( time_n, dt, cycleNumber, domain, mesh, regionNames );
+    computeUnknowns( time_n, dt, cycleNumber, domain, mesh, regionNames, isForward);
     synchronizeUnknowns( time_n, dt, cycleNumber, domain, mesh, regionNames );
   } );
 

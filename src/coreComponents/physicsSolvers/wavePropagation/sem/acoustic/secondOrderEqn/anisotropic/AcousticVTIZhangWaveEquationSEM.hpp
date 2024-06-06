@@ -118,14 +118,16 @@ public:
   real64 explicitStepInternal( real64 const & time_n,
                                real64 const & dt,
                                integer const cycleNumber,
-                               DomainPartition & domain );
+                               DomainPartition & domain,
+                               bool const isForward);
 
   void computeUnknowns( real64 const & time_n,
                         real64 const & dt,
                         integer const cycleNumber,
                         DomainPartition & domain,
                         MeshLevel & mesh,
-                        arrayView1d< string const > const & regionNames );
+                        arrayView1d< string const > const & regionNames,
+                        bool const isForward);
 
   void synchronizeUnknowns( real64 const & time_n,
                             real64 const & dt,
