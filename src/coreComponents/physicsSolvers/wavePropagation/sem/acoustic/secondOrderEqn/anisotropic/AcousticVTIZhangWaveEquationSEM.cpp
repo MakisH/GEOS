@@ -19,6 +19,7 @@
 
 #include "AcousticVTIZhangWaveEquationSEM.hpp"
 #include "AcousticVTIZhangWaveEquationSEMKernel.hpp"
+#include "AcousticVTIZhangAdjointWaveEquationSEMKernel.hpp"
 
 #include "finiteElement/FiniteElementDiscretization.hpp"
 #include "fieldSpecification/FieldSpecificationManager.hpp"

@@ -19,6 +19,7 @@
 
 #include "AcousticVTIFletcherWaveEquationSEM.hpp"
 #include "AcousticVTIFletcherWaveEquationSEMKernel.hpp"
+#include "AcousticVTIFletcherAdjointWaveEquationSEMKernel.hpp"
 
 #include "finiteElement/FiniteElementDiscretization.hpp"
 #include "fieldSpecification/FieldSpecificationManager.hpp"

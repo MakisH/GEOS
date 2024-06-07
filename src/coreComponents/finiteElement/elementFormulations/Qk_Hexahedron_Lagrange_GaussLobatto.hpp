@@ -1234,7 +1234,7 @@ computeStiffnessxyTerm( localIndex const q,
   GL_BASIS::TensorProduct3D::multiIndex( q, qa, qb, qc );
   real64 B[6] = {0};
   real64 J[3][3] = {{0}};
-  computeBxyMatrix( qa, qb, qc, X, J, B ); // The only change!
+  computeBxyMatrix( qa, qb, qc, X, J, B );
   computeGradPhiBGradPhi( qa, qb, qc, B, func );
 }
 
@@ -1252,7 +1252,7 @@ computeStiffnesszTerm( localIndex const q,
   GL_BASIS::TensorProduct3D::multiIndex( q, qa, qb, qc );
   real64 B[6] = {0};
   real64 J[3][3] = {{0}};
-  computeBzMatrix( qa, qb, qc, X, J, B ); // The only change!
+  computeBzMatrix( qa, qb, qc, X, J, B );
   computeGradPhiBGradPhi( qa, qb, qc, B, func );
 }
 

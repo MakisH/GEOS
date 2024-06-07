@@ -321,13 +321,23 @@ struct AcousticMatricesSEM
               }
             }
             constexpr localIndex numNodesPerFace = FE_TYPE::numNodesPerFace;
+            real32 epsi = std::fabs( vti_epsilon[e] );
+            if( std::fabs( epsi ) < 1e-5 )
+              epsi = 0;
+            real32 delt = std::fabs( vti_delta[e] );
+            if( std::fabs( delt ) < 1e-5 )
+              delt = 0;
+            if( delt > epsi )
+              delt = epsi;
+            real32 sqrtEpsi = sqrt( 1 + 2 * epsi );
+            real32 sqrtDelta = sqrt( 1 + 2 * vti_delta[e] );
             if( lateralSurfaceFaceIndicator[f] == 1 )
             {
               // ABC coefficients updated to fit horizontal velocity
-              real32 alpha = 1.0 / (velocity[e] * density[e] * sqrt( 1+2*vti_epsilon[e] ));
+              real32 alpha = 1.0 / (velocity[e] * density[e] * sqrtEpsi);
               // VTI coefficients
-              real32 vti_p_xy  = (1+2*vti_epsilon[e]);
-              real32 vti_qp_xy = sqrt( 1+2*vti_delta[e] );
+              real32 vti_p_xy  = 1 + 2 * epsi;
+              real32 vti_qp_xy = sqrtDelta;
 
               for( localIndex q = 0; q < numNodesPerFace; ++q )
               {
@@ -344,7 +354,7 @@ struct AcousticMatricesSEM
               // ABC coefficients updated to fit horizontal velocity
               real32 alpha = 1.0 / (velocity[e] * density[e]);
               // VTI coefficients
-              real32 vti_pq_z = sqrt( 1+2*vti_delta[e] );
+              real32 vti_pq_z = sqrtDelta;
               real32 vti_q_z  = 1;
               for( localIndex q = 0; q < numNodesPerFace; ++q )
               {
