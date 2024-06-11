@@ -56,10 +56,10 @@ template< typename SUBREGION_TYPE,
           typename CONSTITUTIVE_TYPE,
           typename FE_TYPE >
 class ExplicitAcousticVTIZhangAdjointSEM : public finiteElement::KernelBase< SUBREGION_TYPE,
-                                                                      CONSTITUTIVE_TYPE,
-                                                                      FE_TYPE,
-                                                                      1,
-                                                                      1 >
+                                                                             CONSTITUTIVE_TYPE,
+                                                                             FE_TYPE,
+                                                                             1,
+                                                                             1 >
 {
 public:
 
@@ -262,7 +262,7 @@ protected:
 
 /// The factory used to construct a ExplicitAcousticWaveEquation kernel.
 using ExplicitAcousticVTIZhangAdjointSEMFactory = finiteElement::KernelFactory< ExplicitAcousticVTIZhangAdjointSEM,
-                                                                         real64 >;
+                                                                                real64 >;
 
 
 } // namespace acousticVTIZhangAdjointWaveEquationSEMKernels

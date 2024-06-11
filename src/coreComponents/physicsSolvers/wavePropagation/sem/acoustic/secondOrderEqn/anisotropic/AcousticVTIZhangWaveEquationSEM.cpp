@@ -660,7 +660,7 @@ void AcousticVTIZhangWaveEquationSEM::computeUnknowns( real64 const & GEOS_UNUSE
   arrayView1d< real32 > const stiffnessVector_q = nodeManager.getField< acousticvtifields::StiffnessVector_q >();
   arrayView1d< real32 > const rhs = nodeManager.getField< acousticfields::ForcingRHS >();
 
-  if(isForward)
+  if( isForward )
   {
     auto kernelFactory = acousticVTIZhangWaveEquationSEMKernels::ExplicitAcousticVTIZhangSEMFactory( dt );
 
@@ -673,7 +673,8 @@ void AcousticVTIZhangWaveEquationSEM::computeUnknowns( real64 const & GEOS_UNUSE
                                                             "",
                                                             kernelFactory );
   }
-  else{
+  else
+  {
     auto kernelFactory = acousticVTIZhangAdjointWaveEquationSEMKernels::ExplicitAcousticVTIZhangAdjointSEMFactory( dt );
 
     finiteElement::

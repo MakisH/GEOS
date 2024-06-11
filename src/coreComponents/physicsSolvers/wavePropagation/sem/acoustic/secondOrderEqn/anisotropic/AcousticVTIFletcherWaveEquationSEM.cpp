@@ -661,7 +661,7 @@ void AcousticVTIFletcherWaveEquationSEM::computeUnknowns( real64 const & GEOS_UN
   arrayView1d< real32 > const stiffnessVector_p = nodeManager.getField< acousticvtifields::StiffnessVector_p >();
   arrayView1d< real32 > const stiffnessVector_q = nodeManager.getField< acousticvtifields::StiffnessVector_q >();
   arrayView1d< real32 > const rhs = nodeManager.getField< acousticfields::ForcingRHS >();
-  if(isForward)
+  if( isForward )
   {
     auto kernelFactory = acousticVTIFletcherWaveEquationSEMKernels::ExplicitAcousticVTIFletcherSEMFactory( dt );
 
@@ -674,7 +674,8 @@ void AcousticVTIFletcherWaveEquationSEM::computeUnknowns( real64 const & GEOS_UN
                                                             "",
                                                             kernelFactory );
   }
-  else{
+  else
+  {
     auto kernelFactory = acousticVTIFletcherAdjointWaveEquationSEMKernels::ExplicitAcousticVTIFletcherAdjointSEMFactory( dt );
 
     finiteElement::
@@ -769,7 +770,7 @@ real64 AcousticVTIFletcherWaveEquationSEM::explicitStepInternal( real64 const & 
                                                                 MeshLevel & mesh,
                                                                 arrayView1d< string const > const & regionNames )
   {
-    computeUnknowns( time_n, dt, cycleNumber, domain, mesh, regionNames, isForward);
+    computeUnknowns( time_n, dt, cycleNumber, domain, mesh, regionNames, isForward );
     synchronizeUnknowns( time_n, dt, cycleNumber, domain, mesh, regionNames );
   } );
 

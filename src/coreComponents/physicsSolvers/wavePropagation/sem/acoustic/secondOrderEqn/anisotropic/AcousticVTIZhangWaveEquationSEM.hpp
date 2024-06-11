@@ -119,7 +119,7 @@ public:
                                real64 const & dt,
                                integer const cycleNumber,
                                DomainPartition & domain,
-                               bool const isForward);
+                               bool const isForward );
 
   void computeUnknowns( real64 const & time_n,
                         real64 const & dt,
@@ -127,7 +127,7 @@ public:
                         DomainPartition & domain,
                         MeshLevel & mesh,
                         arrayView1d< string const > const & regionNames,
-                        bool const isForward);
+                        bool const isForward );
 
   void synchronizeUnknowns( real64 const & time_n,
                             real64 const & dt,
