@@ -17,6 +17,7 @@ ElasticSEM                                           node :ref:`DATASTRUCTURE_El
 EmbeddedSurfaceGenerator                             node :ref:`DATASTRUCTURE_EmbeddedSurfaceGenerator`                             
 FlowProppantTransport                                node :ref:`DATASTRUCTURE_FlowProppantTransport`                                
 Hydrofracture                                        node :ref:`DATASTRUCTURE_Hydrofracture`                                        
+ImmiscibleMultiphaseFlow                             node :ref:`DATASTRUCTURE_ImmiscibleMultiphaseFlow`                             
 LaplaceFEM                                           node :ref:`DATASTRUCTURE_LaplaceFEM`                                           
 MultiphasePoromechanics                              node :ref:`DATASTRUCTURE_MultiphasePoromechanics`                              
 MultiphasePoromechanicsReservoir                     node :ref:`DATASTRUCTURE_MultiphasePoromechanicsReservoir`                     

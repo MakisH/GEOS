@@ -18,6 +18,7 @@ ElasticSEM                                           node                 :ref:`
 EmbeddedSurfaceGenerator                             node                 :ref:`XML_EmbeddedSurfaceGenerator`                             
 FlowProppantTransport                                node                 :ref:`XML_FlowProppantTransport`                                
 Hydrofracture                                        node                 :ref:`XML_Hydrofracture`                                        
+ImmiscibleMultiphaseFlow                             node                 :ref:`XML_ImmiscibleMultiphaseFlow`                             
 LaplaceFEM                                           node                 :ref:`XML_LaplaceFEM`                                           
 MultiphasePoromechanics                              node                 :ref:`XML_MultiphasePoromechanics`                              
 MultiphasePoromechanicsReservoir                     node                 :ref:`XML_MultiphasePoromechanicsReservoir`                     

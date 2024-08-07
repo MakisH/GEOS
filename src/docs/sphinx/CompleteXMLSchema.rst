@@ -577,6 +577,13 @@ Element: HydrostaticEquilibrium
 .. include:: ../../coreComponents/schema/docs/HydrostaticEquilibrium.rst
 
 
+.. _XML_ImmiscibleMultiphaseFlow:
+
+Element: ImmiscibleMultiphaseFlow
+=================================
+.. include:: ../../coreComponents/schema/docs/ImmiscibleMultiphaseFlow.rst
+
+
 .. _XML_Included:
 
 Element: Included
@@ -2042,6 +2049,13 @@ Datastructure: HydrofractureInitialization
 Datastructure: HydrostaticEquilibrium
 =====================================
 .. include:: ../../coreComponents/schema/docs/HydrostaticEquilibrium_other.rst
+
+
+.. _DATASTRUCTURE_ImmiscibleMultiphaseFlow:
+
+Datastructure: ImmiscibleMultiphaseFlow
+=======================================
+.. include:: ../../coreComponents/schema/docs/ImmiscibleMultiphaseFlow_other.rst
 
 
 .. _DATASTRUCTURE_Included:

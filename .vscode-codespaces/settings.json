@@ -1,9 +1,9 @@
 {
     "cmake": {
-        "sourceDirectory": "${workspaceFolder}/src",
-        "buildDirectory": "${userHome}/geos-build",
-        "installPrefix": "${userHome}/geos-install",
-        "cacheInit": "/workspaces/GEOS/host-configs/environment.cmake",
+        "sourceDirectory": "/home/rpiazza/two-phase/GEOS/src",
+        "buildDirectory": "/home/rpiazza/two-phase/GEOS/build-ubuntu22-debug",
+        "installPrefix": "/home/rpiazza/two-phase/GEOS/install-ubuntu22-debug",
+        "cacheInit": "/home/rpiazza/two-phase/GEOS/host-configs/environment.cmake",
         "configureSettings": {
             "BLT_MPI_COMMAND_APPEND": "--use-hwthread-cpus;--oversubscribe",
             "ENABLE_OPENMP": "OFF",
@@ -13,5 +13,11 @@
         },
         "configurationType": "Debug",
         "generator": "Ninja"
-    }
+    },
+    "xml.fileAssociations": [    
+        {
+            "pattern": "**.xml",
+            "systemId": "/home/rpiazza/two-phase/GEOS/src/coreComponents/schema/schema.xsd"
+        }
+    ]
 }

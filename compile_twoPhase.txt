@@ -1,0 +1,4 @@
+cd /home/rpiazza/two-phase/GEOS
+python scripts/config-build.py -hc host-configs/Stanford/ubuntu22.cmake -bt Debug
+cd build-ubuntu22-debug
+make geosx -j8

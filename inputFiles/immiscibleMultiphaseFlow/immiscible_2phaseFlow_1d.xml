@@ -84,6 +84,13 @@
       compressibility="5e-10"
       viscosibility="0.0"/>
 
+    <!-- <DeadOilFluid
+      name="fluid"
+      phaseNames="{ oil, gas, water }"
+      surfaceDensities="{ 800.0, 0.9907, 1022.0 }"
+      componentMolarWeight="{ 114e-3, 16e-3, 18e-3 }"
+      tableFiles="{ pvdo.txt, pvdg.txt, pvtw.txt }"/> -->
+
     <CompressibleSolidConstantPermeability
       name="rock"
       solidModelName="nullSolid"
@@ -98,6 +105,14 @@
       defaultReferencePorosity="0.05"
       referencePressure="0.0"
       compressibility="1.0e-9"/>
+
+    <!-- Added for testing -->
+    <BrooksCoreyRelativePermeability
+      name="relperm"
+      phaseNames="{ gas, water }"
+      phaseMinVolumeFraction="{ 0.0, 0.0 }"
+      phaseRelPermExponent="{ 1.5, 1.5 }"
+      phaseRelPermMaxValue="{ 0.9, 0.9 }"/>
 
     <ConstantPermeability
       name="rockPerm"
