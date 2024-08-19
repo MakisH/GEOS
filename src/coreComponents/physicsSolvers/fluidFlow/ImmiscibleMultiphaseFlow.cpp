@@ -48,81 +48,21 @@ using namespace dataRepository;
 using namespace constitutive;
 using namespace fields::immiscibleMultiphaseFlow;
 
-// Fluid model for isothermal T = 175 oC
-real64 co2_viscosity(real64 P) 
-{
-  P = P / 1000000.0; // check whether GEOS uses Pa or MPa
-  return ( -1.5596 * pow(10, -10) * pow(P, 3) + 1.94571 * pow(10, -8) * pow(P, 2) + 6.77304 * pow(10, -8) * P + 0.0000214166); // [Pa.s]
+
+real64 computeDensityL ( real64 P ) {
+  return (1.0e-6 * (P * P));
 }
 
-real64 co2_dviscosity(real64 P)
-{
-  P = P / 1000000.0; // check whether GEOS uses Pa or MPa
-  return ( -4.6788 * pow(10, -10) * pow(P, 2) + 3.89142 * pow(10, -8) * P + 6.77304 * pow(10, -8)); // [Pa.s/MPa]
+real64 computedDensitydPL ( real64 P ) {
+  return (1.0e-6 * 2.0 * (P));
 }
 
-real64 co2_density(real64 P)
-{
-  P = P / 1000000.0; // check whether GEOS uses Pa or MPa
-  return ( -0.0000126691 * pow(P, 3) - 0.118131 * pow(P, 2) + 19.6211 * P - 52.0635 ); // [kg/m3]
+real64 computeDensityV ( real64 P ) {
+  return (1.0e-8 * (P * P));
 }
 
-real64 co2_ddensity(real64 P)
-{
-  P = P / 1000000.0; // check whether GEOS uses Pa or MPa
-  return ( -0.0000380073 * pow(P, 2) - 0.236262 * P + 19.6211 ); // [kg/m3.MPa]
-}
-
-real64 water_viscosity(real64 P) 
-{
-  return ( 0.000164 ); // [Pa.s]
-}
-
-real64 water_dviscosity(real64 P) 
-{
-  return ( 0.0 ); // [Pa.s/MPa]
-}
-
-real64 water_density(real64 P) 
-{
-  P = P / 1000000.0; // check whether GEOS uses Pa or MPa
-  return ( 0.55125 * P + 893.06044); // [kg/m3]
-}
-
-real64 water_ddensity(real64 P) 
-{  
-  return ( 0.55125 ); // [kg/m3.MPa]
-}
-
-// Rock-Fluid model
-real64 co2_relperm(real64 S)
-{
-  return ( pow(1 - S, 2) ); // [-]
-}
-
-real64 co2_drelperm(real64 S)
-{
-  return ( 2.0 * (1 - S) ); // [-]
-}
-
-real64 water_relperm(real64 S)
-{
-  return ( pow(S, 6) ); // [-]
-}
-
-real64 water_drelperm(real64 S)
-{
-  return ( 6.0 * pow(S, 5) ); // [-]
-}
-
-real64 co2_cappress(real64 S) 
-{
-  return ( 0.00049309 * pow(S, -2.34806) ); // [MPa] check whether GEOS uses Pa or MPa
-}
-
-real64 co2_dcappress(real64 S) 
-{
-  return ( -0.00021 * pow(S, -1.34806) ); // [MPa] check whether GEOS uses Pa or MPa
+real64 computedDensitydPV ( real64 P ) {
+  return (1.0e-8 * 2.0 * (P));
 }
 
 ImmiscibleMultiphaseFlow::ImmiscibleMultiphaseFlow( const string & name,
@@ -580,6 +520,9 @@ void ImmiscibleMultiphaseFlow::assembleSystem( real64 const GEOS_UNUSED_PARAM( t
                      localRhs );
 }
 
+
+// This part of the code "assembleAccumulationTerm" is added by Ammar along with the comments.
+
 void ImmiscibleMultiphaseFlow::assembleAccumulationTerm( DomainPartition & domain,
                                                          DofManager const & dofManager,
                                                          CRSMatrixView< real64, globalIndex const > const & localMatrix,
@@ -588,20 +531,116 @@ void ImmiscibleMultiphaseFlow::assembleAccumulationTerm( DomainPartition & domai
   GEOS_MARK_FUNCTION;
 
 
-  GEOS_UNUSED_VAR( domain, dofManager, localMatrix, localRhs );
+  forDiscretizationOnMeshTargets( domain.getMeshBodies(), [&]( string const &,
+                                                               MeshLevel const & mesh,
+                                                               arrayView1d< string const > const & regionNames )
+  {
+    mesh.getElemManager().forElementSubRegions( regionNames,
+                                                [&]( localIndex const,
+                                                     ElementSubRegionBase const & subRegion )
+    {
+      string const dofKey = dofManager.getKey( viewKeyStruct::elemDofFieldString() );
+      string const & solidName = subRegion.getReference< string >( viewKeyStruct::solidNamesString() );
 
-  // forDiscretizationOnMeshTargets( domain.getMeshBodies(), [&]( string const &,
-  //                                                              MeshLevel const & mesh,
-  //                                                              arrayView1d< string const > const & regionNames )
-  // {
-  //   mesh.getElemManager().forElementSubRegions( regionNames,
-  //                                               [&]( localIndex const,
-  //                                                    ElementSubRegionBase const & subRegion )
-  //   {
-  //     string const dofKey = dofManager.getKey( viewKeyStruct::elemDofFieldString() );
-  //     string const & solidName = subRegion.getReference< string >( viewKeyStruct::solidNamesString() );
-  //   } );
-  // } );
+    // The line below needs to be used once we have a fluid model
+    //  MultiFluidBase const & fluid = getConstitutiveModel< MultiFluidBase >( subRegion, fluidName );
+      CoupledSolidBase const & solid = getConstitutiveModel< CoupledSolidBase >( subRegion, solidName );
+
+    arrayView1d< real64 const > const pres = subRegion.getField< fields::flow::pressure >();
+    integer const numofPhases = 2;
+    globalIndex const rankOffset = dofManager.rankOffset();
+    arrayView1d< globalIndex const > const dofNumber = subRegion.getReference< array1d< globalIndex > >( dofKey );
+    arrayView1d< integer const > const elemGhostRank= subRegion.ghostRank();
+    arrayView1d< real64 const > const volume = subRegion.getElementVolume();
+    arrayView2d< real64 const > const porosity = solid.getPorosity();
+    arrayView2d< real64 const > const dPoro_dPres = solid.getDporosity_dPressure();
+    arrayView2d< real64 const, immiscibleFlow::USD_PHASE > const phaseVolFrac= subRegion.template getField< fields::immiscibleMultiphaseFlow::phaseVolumeFraction >();
+    // The two lines below need to be used once we have a fluid model
+    //arrayView3d< real64 const, immiscibleFlow::USD_PHASE > m_phaseDens = fluid.phaseDensity();
+    //arrayView4d< real64 const, immiscibleFlow::USD_PHASE_DS > m_dPhaseDens = fluid.dPhaseDensity();
+    arrayView2d< real64 const, immiscibleFlow::USD_PHASE > phaseDens = subRegion.getField< fields::immiscibleMultiphaseFlow::phaseDensity>();
+    arrayView2d< real64 const, immiscibleFlow::USD_PHASE > dPhaseDens = subRegion.getField< fields::immiscibleMultiphaseFlow::dPhaseDensity>();
+    arrayView2d< real64 const, immiscibleFlow::USD_PHASE > const PhaseMass_n = subRegion.template getField< fields::immiscibleMultiphaseFlow::phaseMass_n >();
+
+    // The line below is to be used if we want to use the total mass flux formulation
+    //BitFlags< ElementBasedAssemblyKernelFlags > m_kernelFlags = kernelFlags;
+    GEOS_MARK_FUNCTION;
+
+    integer const numElems = subRegion.size();
+    forAll< parallelDevicePolicy<> >( 
+      numElems, [=] GEOS_HOST_DEVICE ( localIndex const ei )
+    {
+      if( elemGhostRank( ei ) >= 0 )
+      {
+        return;
+      }
+
+      // setup
+      globalIndex dofIndices[2]{};
+      real64 localResidual[2]{};
+      real64 localJacobian[2][2]{};
+
+   real64 const poreVolume = volume[ei] * porosity[ei][0];
+   real64 const dPoreVolume_dPres = volume[ei] * dPoro_dPres[ei][0];
+
+   localIndex localRow = dofNumber[ei] - rankOffset;
+    
+    for( integer idof = 0; idof < 2; ++idof )
+    {
+      dofIndices[idof] = dofNumber[ei] + idof;
+    }
+
+      // compute accumulation
+
+
+   for( integer ip = 0; ip < numofPhases; ++ip )
+      {
+
+        // The few lines of code below are to be used if we want to use free functions for the phase density (to test the derivatives)
+       // real64 const pressure = pres[ei];
+
+       // real64 phaseDens = computeDensityV ( pressure );
+       // real64 dPhaseDens = computedDensitydPV ( pressure );
+
+       // if( ip == 1)
+       // {
+         // phaseDens = computeDensityL ( pressure );
+         // dPhaseDens = computedDensitydPL ( pressure );
+        //}
+
+        real64 const phaseMass = poreVolume * phaseVolFrac[ei][ip] * phaseDens[ei][ip];
+        real64 const phaseMass_n = PhaseMass_n[ei][ip];
+
+        localResidual[ip] += phaseMass - phaseMass_n;
+
+        real64 const dPhaseMass_dP =  dPoreVolume_dPres * phaseVolFrac[ei][ip] * phaseDens[ei][ip]
+                                       + poreVolume * phaseVolFrac[ei][ip] * dPhaseDens[ei][ip];
+        localJacobian[ip][0] += dPhaseMass_dP;
+
+        real64 const dPhaseMass_dS = poreVolume * phaseDens[ei][ip];
+    
+        localJacobian[ip][1] += dPhaseMass_dS;
+      }
+
+      // complete
+      
+      integer const numRows = numofPhases + 1;
+
+    for( integer i = 0; i < numRows; ++i )
+    {
+      localRhs[localRow + i] += localResidual[i];
+      localMatrix.addToRow< serialAtomic >( localRow + i,
+                                              dofIndices,
+                                              localJacobian[i],
+                                              2);
+    }
+
+    } );
+
+    } );
+  } );
+
+
 }
 
 void ImmiscibleMultiphaseFlow::assembleFluxTerms( real64 const dt,

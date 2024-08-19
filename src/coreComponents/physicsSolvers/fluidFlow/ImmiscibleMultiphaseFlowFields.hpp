@@ -77,13 +77,22 @@ DECLARE_FIELD( phaseMobility,
                WRITE_AND_READ,
                "Phase mobility" );
 
+DECLARE_FIELD( dPhaseVolumeFraction,
+               "dPhaseVolumeFraction",
+               array3dLayoutPhase_dS,
+               0,
+               NOPLOT,
+               NO_WRITE,
+               "Derivative of phase volume fraction with respect to pressure, temperature, global component density" );
+
 DECLARE_FIELD( dPhaseMobility,
                "dPhaseMobility",
                array3dLayoutPhase_dS,
                0,
                NOPLOT,
                NO_WRITE,
-               "Derivative of phase volume fraction with respect to pressure, temperature, global component density" );
+               "Derivative of phase mobility with respect to pressure, temperature, global component density" );
+
 
 DECLARE_FIELD( phaseOutflux,
                "phaseOutflux",
@@ -100,10 +109,47 @@ DECLARE_FIELD( phaseCFLNumber,
                LEVEL_0,
                NO_WRITE,
                "Phase CFL number" );
+
+DECLARE_FIELD( phaseDensity,
+               "phaseDensity",
+               array2dLayoutPhase,
+               1000.0,
+               NOPLOT,
+               WRITE_AND_READ,
+               "Phase density" );
+
+
+DECLARE_FIELD( dPhaseDensity,
+               "dPhaseDensity",
+               array2dLayoutPhase,
+               0.0,
+               NOPLOT,
+               WRITE_AND_READ,
+               "Phase density derivative with respect to P" );
+
+DECLARE_FIELD( phaseViscosity,
+               "phaseViscosity",
+               array2dLayoutPhase,
+               1.0e-4,
+               NOPLOT,
+               WRITE_AND_READ,
+               "Phase density" );
+
+
+DECLARE_FIELD( dPhaseViscosity,
+               "dPhaseViscosity",
+               array2dLayoutPhase,
+               0.0,
+               NOPLOT,
+               WRITE_AND_READ,
+               "Phase density derivative with respect to P" );
+
+
+}
 }
 
 }
 
-}
+
 
 #endif // GEOS_PHYSICSSOLVERS_FLUIDFLOW_IMMISCIBLEMULTIPHASEFLOWFIELDS_HPP_
