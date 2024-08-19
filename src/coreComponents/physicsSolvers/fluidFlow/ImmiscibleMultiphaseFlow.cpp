@@ -22,8 +22,6 @@
 #include "FlowSolverBaseFields.hpp"
 #include "physicsSolvers/fluidFlow/ImmiscibleMultiphaseFlowFields.hpp"
 #include "physicsSolvers/fluidFlow/ImmiscibleMultiphaseKernels.hpp"
-#include "physicsSolvers/fluidFlow/IsothermalCompositionalMultiphaseBaseKernels.hpp"
-#include "physicsSolvers/fluidFlow/IsothermalCompositionalMultiphaseFVMKernels.hpp"
 
 #include "constitutive/ConstitutiveManager.hpp"
 #include "constitutive/capillaryPressure/CapillaryPressureFields.hpp"
@@ -47,7 +45,6 @@ namespace geos
 using namespace dataRepository;
 using namespace constitutive;
 using namespace fields::immiscibleMultiphaseFlow;
-
 
 real64 computeDensityL ( real64 P ) {
   return (1.0e-6 * (P * P));
@@ -677,8 +674,7 @@ void ImmiscibleMultiphaseFlow::assembleFluxTerms( real64 const dt,
                                                                                   localMatrix.toViewConstSizes(),
                                                                                   localRhs.toView() );
     } ); 
-  } );                                                           
-
+  } );
 }
 
 // Ryan: Looks like this will need to be overwritten as well...
